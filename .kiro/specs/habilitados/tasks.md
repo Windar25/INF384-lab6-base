@@ -21,7 +21,7 @@ Implementación incremental del endpoint `POST /habilitados` siguiendo el orden:
     - Devolver los objetos curso con el shape del catálogo (`id, name, credits, cycle, type, prerequisites` con ids no resueltos)
     - _Requirements: 4.3, 4.4, 4.5, 4.6_
 
-- [ ] 2. Crear ruta `src/routes/habilitados.js` y montarla en `src/app.js`
+- [x] 2. Crear ruta `src/routes/habilitados.js` y montarla en `src/app.js`
   - [ ] 2.1 Implementar `POST /` en `src/routes/habilitados.js`
     - `router.post('/')`: en `try/catch`, validar con `validarAprobados(req.body)` → 400 `{error: mensaje}` si falla; si pasa, construir `new Set(req.body.aprobados)` (deduplica) y responder 200 con `calcularHabilitados(repositorio.listar(), set)`
     - En el `catch`, delegar a `next(err)` para el 500 genérico del middleware de errores
