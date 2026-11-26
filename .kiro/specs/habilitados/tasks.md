@@ -72,7 +72,7 @@ Implementación incremental del endpoint `POST /habilitados` siguiendo el orden:
     - Mock de `../src/data/repositorio` para que `listar()` lance → 500 con `{"error": "error interno del servidor"}`, sin stack traces ni rutas en el cuerpo
     - _Requirements: 8.1, 8.2_
 
-- [ ] 5. Gates de calidad en CI
+- [x] 5. Gates de calidad en CI
   - [ ] 5.1 Actualizar `jest.config.js` y verificar cobertura
     - Agregar `coverageThreshold: { global: { lines: 80 } }` a `jest.config.js`
     - Ejecutar `npx jest --runInBand --coverage` localmente: suite completa en verde y cobertura ≥ 80% líneas
