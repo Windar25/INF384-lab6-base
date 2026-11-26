@@ -150,3 +150,39 @@ describe('GET /cursos/:codigo', () => {
     expect(res.body).toEqual({ error: 'curso no encontrado' });
   });
 });
+
+// ─── Requisito 3.1 — Middleware de manejo de errores ────────────────────────
+// Usamos una app Express mínima que registra primero la ruta que lanza el error
+// y luego el middleware de errores, garantizando el orden correcto.
+describe('Middleware de errores (requisito 3.1)', () => {
+  let appError;
+
+  beforeAll(() => {
+    const express = require('express');
+    const manejadorErrores = require('../src/middleware/errores');
+
+    appError = express();
+    appError.get('/__test_error__', (req, res, next) => {
+      next(new Error('fallo inesperado'));
+    });
+    // El middleware de errores debe registrarse después de las rutas
+    appError.use(manejadorErrores);
+  });
+
+  test('3.1 un error no controlado responde 500 con mensaje genérico', async () => {
+    const res = await request(appError).get('/__test_error__');
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ error: 'error interno del servidor' });
+  });
+
+  test('3.1 el mensaje de error no expone detalles internos', async () => {
+    const res = await request(appError).get('/__test_error__');
+
+    expect(res.status).toBe(500);
+    // No debe haber stack trace ni mensaje de la excepción real
+    expect(res.body).not.toHaveProperty('stack');
+    expect(res.body).not.toHaveProperty('message');
+    expect(JSON.stringify(res.body)).not.toContain('fallo inesperado');
+  });
+});
