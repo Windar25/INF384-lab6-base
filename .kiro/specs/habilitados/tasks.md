@@ -84,7 +84,7 @@ Implementación incremental del endpoint `POST /habilitados` siguiendo el orden:
     - Step final `npx jest --runInBand --coverage --coverageThreshold='{"global":{"lines":80}}'`
     - _Requirements: 9.1, 9.2_
 
-- [ ] 6. Verificación final
+- [x] 6. Verificación final
   - Ejecutar `npx jest --runInBand --coverage` completo (unit + PBT + integración) y confirmar verde con cobertura ≥ 80%
   - Verificar que ningún mensaje de error del endpoint refleja el input (revisar los cuerpos de los tests 4.3 y 4.6)
   - Ensure all tests pass, ask the user if questions arise.
