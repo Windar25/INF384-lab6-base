@@ -52,7 +52,7 @@ Implementación incremental del endpoint `POST /habilitados` siguiendo el orden:
     - Generador de valores no-array (strings, números, booleans, null, objetos, body ausente/vacío, arrays con elementos no-string) → `validarAprobados` retorna error
     - **Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7**
 
-- [ ] 4. Pruebas de integración con supertest (`tests/habilitados.test.js`)
+- [x] 4. Pruebas de integración con supertest (`tests/habilitados.test.js`)
   - [ ] 4.1 Happy path y exclusión (HTTP)
     - `{"aprobados": ["1INF25","1INF27","1INF49"]}` → 200 con array de exactamente 27 elementos, contiene `1INF29`, `1INF30`, `1INF31`, `1INF32`; cada elemento excluido de aprobados y con prerrequisitos satisfechos
     - _Requirements: 4.1, 4.2, 4.4, 4.5_
