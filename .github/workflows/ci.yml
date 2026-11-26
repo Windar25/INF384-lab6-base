@@ -30,5 +30,9 @@ jobs:
       - name: Auditoría de dependencias (SCA)
         run: npm audit --audit-level=high
 
+      - name: Análisis estático de seguridad (SAST)
+        run: npm run sast
+        continue-on-error: true
+
       - name: Ejecutar pruebas con cobertura
         run: npx jest --runInBand --coverage

@@ -248,13 +248,14 @@ Principios aplicados a todos los mensajes:
 
 ## Gates de Calidad en CI
 
-Se amplía `.github/workflows/ci.yml` con tres gates. Orden de steps: **gitleaks → npm ci → npm audit → npm test (con coverage)**. La detección de secretos no necesita dependencias y debe correr antes de instalar nada; el audit corre justo después de `npm ci` porque necesita el lockfile resuelto; las pruebas con umbral de cobertura son el gate final.
+Se amplía `.github/workflows/ci.yml` con cuatro gates (tres bloqueantes + uno de aviso). Orden de steps: **gitleaks → npm ci → npm audit → SAST (avisa) → npm test (con coverage)**. La detección de secretos no necesita dependencias y debe correr antes de instalar nada; el audit corre justo después de `npm ci` porque necesita el lockfile resuelto; el análisis estático de seguridad (SAST) corre tras el audit como check informativo (no bloquea); las pruebas con umbral de cobertura son el gate final.
 
 | Gate | Herramienta | Umbral | Bloquea/Avisa | Etapa | Razón |
 |---|---|---|---|---|---|
 | Cobertura de líneas | `jest --coverage --coverageThreshold='{"global":{"lines":80}}'` (vía `npm test -- --coverage`) | ≥ 80% líneas | **BLOQUEA** (exit code ≠ 0 falla el step) | Tras `npm ci`, step final `Ejecutar pruebas` | El requisito 9.1 exige ≥ 80% de líneas como condición de aprobación, no como métrica informativa. Jest con `coverageThreshold` convierte el incumplimiento en exit code ≠ 0, que ya falla el job sin lógica extra. Estricto porque la cobertura es requisito de aceptación del laboratorio. |
 | SCA (dependencias) | `npm audit --audit-level=high` | Sin vulnerabilidades ≥ high (severidad high/critical) | **BLOQUEA** (exit code ≠ 0 falla el step) | Tras `npm ci`, antes de las pruebas | Dependencias con vulnerabilidades high/critical comprometen el servicio directamente (Express, parsers, etc.) y no deben llegar a main. `npm audit --audit-level=high` retorna exit code ≠ 0 si detecta vulnerabilidades de esa severidad, lo que falla el step y detiene el pipeline sin lógica adicional. Si existe una vulnerabilidad sin fix publicado, el equipo debe evaluar un override explícito (`npm audit --audit-level=critical`) o una excepción documentada; el comportamiento por defecto es bloquear. |
 | Detección de secretos | `gitleaks/gitleaks-action@v2` (o paso manual `gitleaks detect --redact`) | Cero secretos detectados | **BLOQUEA** | Primera etapa, tras el checkout, antes de `npm ci` | Un secreto commiteado (token, contraseña, `.env`) es el riesgo más severo: no requiere build ni ejecución para explotarse, solo que el repo sea visible. Correrlo primero evita gastar tiempo de build/instalación en un commit que va a ser rechazado y reduce la ventana de exposición del secreto en los logs del pipeline. |
+| SAST (análisis estático) | `eslint src/` con `eslint-plugin-security` | 0 alertas security high (eval, ReDoS, acceso dinámico a propiedades) | **AVISA** (`continue-on-error: true`) | Tras `npm ci`, junto a los checks estáticos, antes de las pruebas | Detectar patrones inseguros (eval, regex ReDoS, acceso dinámico a propiedades) sin bloquear el despliegue por posibles falsos positivos en código heredado; las alertas se revisan manualmente antes de promover a bloqueante. |
 
 ### Cambios concretos al workflow
 
@@ -283,13 +284,17 @@ jobs:
       - name: Análisis de vulnerabilidades (SCA)
         run: npm audit --audit-level=high
 
+      - name: Análisis estático de seguridad (SAST)
+        run: npm run sast
+        continue-on-error: true
+
       - name: Ejecutar pruebas con cobertura
         run: npx jest --runInBand --coverage --coverageThreshold='{"global":{"lines":80}}'
 ```
 
 Notas:
 - `npm test` pasa a ejecutarse con `--coverage` y el umbral embebido en el comando (o alternativamente el umbral se fija en `jest.config.js` con `coverageThreshold: { global: { lines: 80 } }` y el step es `npm test -- --coverage`; se prefiere la opción del config por visibilidad permanente).
-- El job solo pasa a main si gitleaks, `npm audit` y la cobertura pasan (requisito 9.2); `npm audit` falla el step con exit code ≠ 0 ante cualquier vulnerabilidad high o critical.
+- El job solo pasa a main si gitleaks, `npm audit` y la cobertura pasan (requisito 9.2); el SAST avisa pero no bloquea (`continue-on-error: true`); `npm audit` falla el step con exit code ≠ 0 ante cualquier vulnerabilidad high o critical.
 - Se mantiene `npm ci` (no `npm install`) por reproducibilidad desde el lockfile.
 
 ## Testing Strategy

@@ -112,3 +112,8 @@ Implementación incremental del endpoint `POST /habilitados` siguiendo el orden:
   ]
 }
 ```
+
+- [x] 7. Punto extra: gate SAST con eslint-plugin-security (advisory)
+  - [ ] 7.1 Instalar eslint y eslint-plugin-security, crear config mínima y script "sast"
+  - [ ] 7.2 Agregar step SAST al ci.yml con continue-on-error: true
+  - [ ] 7.3 Documentar el 4to gate en design.md y TRAZABILIDAD.md
