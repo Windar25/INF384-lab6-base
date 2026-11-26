@@ -32,7 +32,7 @@ Implementación incremental del endpoint `POST /habilitados` siguiendo el orden:
     - Verificar que `npm start` levanta sin errores y que `GET /cursos` y `/health` siguen funcionando
     - _Requirements: 7.7, 8.1, 8.2_
 
-- [ ] 3. Pruebas de propiedad (fast-check) sobre las funciones puras
+- [x] 3. Pruebas de propiedad (fast-check) sobre las funciones puras
   - Instalar `fast-check` como devDependency (`npm install --save-dev fast-check`)
   - [ ] 3.1 Property 1: especificación exacta de habilitados (model-based)
     - Generador: subconjuntos aleatorios de los 87 ids del catálogo + códigos válidos inexistentes (`fc.stringMatching(/^[A-Z0-9]{6}$/)`)
