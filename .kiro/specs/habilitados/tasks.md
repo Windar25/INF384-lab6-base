@@ -6,7 +6,7 @@ Implementación incremental del endpoint `POST /habilitados` siguiendo el orden:
 
 ## Tasks
 
-- [ ] 1. Crear módulo de funciones puras `src/util/habilitados.js`
+- [x] 1. Crear módulo de funciones puras `src/util/habilitados.js`
   - [ ] 1.1 Implementar `validarAprobados(body)`
     - Definir constantes `FORMATO_CODIGO = /^[A-Z0-9]{6}$/` y `LIMITE_APROBADOS = 60`
     - Orden de chequeos: presencia del body y de `aprobados` → tipo array → tipo de cada elemento (string) → tamaño (> 60 sobre el arreglo original, antes de deduplicar) → formato de cada elemento
