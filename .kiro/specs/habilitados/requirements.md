@@ -35,7 +35,7 @@ Esta especificación define el endpoint `POST /habilitados` para la API REST de 
 
 #### Acceptance Criteria
 
-1. WHEN la propiedad `aprobados` contiene más de 60 elementos, THEN THE API SHALL responder HTTP 400 con el cuerpo `{"error": "El arreglo aprobados no puede superar 100 elementos"}`.
+1. WHEN la propiedad `aprobados` contiene más de 60 elementos, THEN THE API SHALL responder HTTP 400 con el cuerpo `{"error": "El arreglo aprobados no puede superar 60 elementos"}`.
 2. WHEN la propiedad `aprobados` contiene exactamente 60 elementos válidos, THEN THE API SHALL procesar la petición y responder HTTP 200.
 3. WHEN la propiedad `aprobados` contiene 5000 elementos, THEN THE API SHALL responder HTTP 400 con el mensaje del criterio 1.
 
