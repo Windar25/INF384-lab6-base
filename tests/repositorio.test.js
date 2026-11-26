@@ -35,12 +35,13 @@ describe('repositorio de cursos', () => {
   });
 
   describe('obtener(codigo)', () => {
-    test('devuelve 1INF30 con su requisito 1INF25', () => {
+    test('devuelve 1INF30 con su requisito 1INF25 resuelto (id y nombre)', () => {
       const curso = repositorio.obtener('1INF30');
 
       expect(curso.name).toBe('Programación 3');
       expect(curso.cycle).toBe(6);
-      expect(curso.prerequisites).toEqual(['1INF25']);
+      // Los requisitos se resuelven a { id, name } (Requisito 2.1)
+      expect(curso.prerequisites).toEqual([{ id: '1INF25', name: 'Programación 2' }]);
     });
 
     test('devuelve undefined si el código no existe', () => {

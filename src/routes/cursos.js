@@ -32,4 +32,19 @@ router.get('/', (req, res) => {
   return res.json(repositorio.listarPorCiclo(cicloNum));
 });
 
+/**
+ * GET /cursos/:codigo
+ *
+ * Requisitos 2.1, 2.2
+ */
+router.get('/:codigo', (req, res) => {
+  const curso = repositorio.obtener(req.params.codigo);
+
+  if (!curso) {
+    return res.status(404).json({ error: 'curso no encontrado' });
+  }
+
+  return res.json(curso);
+});
+
 module.exports = router;

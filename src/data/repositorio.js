@@ -16,7 +16,16 @@ function listarPorCiclo(ciclo) {
 }
 
 function obtener(codigo) {
-  return porCodigo.get(codigo);
+  const curso = porCodigo.get(codigo);
+  if (!curso) return undefined;
+
+  // Resolver cada ID de requisito en { id, name } (Requisito 2.1)
+  const prerequisites = (curso.prerequisites || []).map((id) => {
+    const req = porCodigo.get(id);
+    return req ? { id: req.id, name: req.name } : { id, name: null };
+  });
+
+  return { ...curso, prerequisites };
 }
 
 module.exports = { listar, listarPorCiclo, obtener };
